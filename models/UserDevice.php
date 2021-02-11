@@ -1,11 +1,12 @@
 <?php 
-  class Room {
+  class UserDevice {
     private $conn;
-    private $table = 'room';
+    private $table = 'user_device';
 
     public $id;
+    public $branchId;
+    public $deviceId;
     public $userId;
-    public $status;
     public $createdAt;
 
     public function __construct($db) {
@@ -14,7 +15,7 @@
 
     public function read() {
       $query = 'SELECT 
-                * FROM ' . $this->table . ' r
+                * FROM ' . $this->table . ' u_d
                 r.createdAt DESC';
       
       $stmt = $this->conn->prepare($query);
@@ -24,7 +25,7 @@
 
     public function read_single() {
       $query = 'SELECT *
-                FROM ' . $this->table . ' r
+                FROM ' . $this->table . ' u_d
                 WHERE
                 p.id = ?
                 LIMIT 0,1';
@@ -35,15 +36,17 @@
 
       $row = $stmt->fetch(PDO::FETCH_ASSOC);
       $this->id = $row['id'];
+      $this->branchId = $row['branchId'];
+      $this->deviceId = $row['deviceId'];
       $this->userId = $row['userId'];
-      $this->status = $row['status'];
       $this->createdAt = $row['createdAt'];
     }
 
     public function create() {
       $query = 'INSERT INTO ' . $this->table . 
-               ' SET userId = :userId, 
-               status = :status';
+               ' SET branchId = :branchId, 
+               deviceId = :deviceId,
+               userId = :userId';
 
       $stmt = $this->conn->prepare($query);
 
@@ -51,8 +54,9 @@
       $this->status = htmlspecialchars(strip_tags($this->status));
 
 
+      $stmt->bindParam(':branchId', $this->branchId);
+      $stmt->bindParam(':deviceId', $this->deviceId);
       $stmt->bindParam(':userId', $this->userId);
-      $stmt->bindParam(':status', $this->status);
 
       if ($stmt->execute()) {
         return true;            
@@ -65,16 +69,18 @@
 
     public function update() {
       $query = 'UPDATE ' . $this->table . 
-               ' SET userId = :userId, 
-               status = :status';
+                ' SET branchId = :branchId, 
+                deviceId = :deviceId,
+                userId = :userId';
 
       $stmt = $this->conn->prepare($query);
 
       $this->userId = htmlspecialchars(strip_tags($this->userId));
       $this->status = htmlspecialchars(strip_tags($this->status));
  
+      $stmt->bindParam(':branchId', $this->branchId);
+      $stmt->bindParam(':deviceId', $this->deviceId);
       $stmt->bindParam(':userId', $this->userId);
-      $stmt->bindParam(':status', $this->status);
 
       if ($stmt->execute()) {
         return true;

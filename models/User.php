@@ -85,11 +85,12 @@
 
     public function update() {
       $query = 'UPDATE ' . $this->table . 
-                ' SET title = :title, 
-                body = :body, 
-                author = :author, 
-                category_id = :category_id
-                WHERE id = :id';
+                ' SET user = :user, 
+                password = :password, 
+                name = :name, 
+                lastName = :lastName, 
+                email = :email, 
+                phone = :phone';
 
       $stmt = $this->conn->prepare($query);
 
