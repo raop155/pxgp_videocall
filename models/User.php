@@ -19,7 +19,7 @@
     public function read() {
       $query = 'SELECT 
                 * FROM ' . $this->table . ' u
-                u.created_at DESC';
+                u.createdAt DESC';
       
       $stmt = $this->conn->prepare($query);
       $stmt->execute();
@@ -38,16 +38,25 @@
       $stmt->execute();
 
       $row = $stmt->fetch(PDO::FETCH_ASSOC);
-      $this->title = $row['title'];
-      $this->body = $row['body'];
-      $this->author = $row['author'];
-      $this->category_id = $row['category_id'];
-      $this->category_name = $row['category_name'];
+      $this->id = $row['id'];
+      $this->user = $row['user'];
+      $this->password = $row['password'];
+      $this->name = $row['name'];
+      $this->lastName = $row['lastName'];
+      $this->email = $row['email'];
+      $this->phone = $row['phone'];
+      $this->createdAt = $row['createdAt'];
+
     }
 
     public function create() {
       $query = 'INSERT INTO ' . $this->table . 
-               ' SET user = :user, password = :password, name = :name, lastName = :lastName, email = :email, phone = :phone';
+               ' SET user = :user, 
+               password = :password, 
+               name = :name, 
+               lastName = :lastName, 
+               email = :email, 
+               phone = :phone';
 
       $stmt = $this->conn->prepare($query);
 
@@ -75,8 +84,11 @@
     }
 
     public function update() {
-      $query = 'UPDATE ' . $this->table . '
-                SET title = :title, body = :body, author = :author, category_id = :category_id
+      $query = 'UPDATE ' . $this->table . 
+                ' SET title = :title, 
+                body = :body, 
+                author = :author, 
+                category_id = :category_id
                 WHERE id = :id';
 
       $stmt = $this->conn->prepare($query);
