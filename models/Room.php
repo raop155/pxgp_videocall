@@ -77,14 +77,17 @@ class Room
     $query = 'UPDATE ' . $this->table .
       ' SET userId = :userId, 
             room = :room,
-            status = :status';
+            status = :status
+        WHERE id = :id';
 
     $stmt = $this->conn->prepare($query);
 
+    $this->id = htmlspecialchars(strip_tags($this->id));
     $this->userId = htmlspecialchars(strip_tags($this->userId));
     $this->room = htmlspecialchars(strip_tags($this->room));
     $this->status = htmlspecialchars(strip_tags($this->status));
 
+    $stmt->bindParam(':id', $this->id);
     $stmt->bindParam(':userId', $this->userId);
     $stmt->bindParam(':room', $this->room);
     $stmt->bindParam(':status', $this->status);

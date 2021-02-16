@@ -12,6 +12,7 @@ class User
   public $email;
   public $phone;
   public $createdAt;
+  public $status;
 
   public function __construct($db)
   {
@@ -20,9 +21,8 @@ class User
 
   public function read()
   {
-    $query = 'SELECT 
-                * FROM ' . $this->table . ' u
-                u.createdAt DESC';
+    $query = 'SELECT * FROM ' . $this->table . ' u
+              ORDER BY u.createdAt DESC';
 
     $stmt = $this->conn->prepare($query);
     $stmt->execute();
@@ -34,7 +34,7 @@ class User
     $query = 'SELECT *
                 FROM ' . $this->table . ' u
                 WHERE
-                p.id = ?
+                u.id = ?
                 LIMIT 0,1';
 
     $stmt = $this->conn->prepare($query);
@@ -50,6 +50,7 @@ class User
     $this->email = $row['email'];
     $this->phone = $row['phone'];
     $this->createdAt = $row['createdAt'];
+    $this->status = $row['status'];
   }
 
   public function create()
@@ -95,23 +96,29 @@ class User
             name = :name, 
             lastName = :lastName, 
             email = :email, 
-            phone = :phone';
+            phone = :phone,
+            status = :status
+        WHERE id = :id';
 
     $stmt = $this->conn->prepare($query);
 
+    $this->id = htmlspecialchars(strip_tags($this->id));
     $this->user = htmlspecialchars(strip_tags($this->user));
     $this->password = htmlspecialchars(strip_tags($this->password));
     $this->name = htmlspecialchars(strip_tags($this->name));
     $this->lastName = htmlspecialchars(strip_tags($this->lastName));
     $this->email = htmlspecialchars(strip_tags($this->email));
     $this->phone = htmlspecialchars(strip_tags($this->phone));
+    $this->status = htmlspecialchars(strip_tags($this->status));
 
+    $stmt->bindParam(':id', $this->id);
     $stmt->bindParam(':user', $this->user);
     $stmt->bindParam(':password', $this->password);
     $stmt->bindParam(':name', $this->name);
     $stmt->bindParam(':lastName', $this->lastName);
     $stmt->bindParam(':email', $this->email);
     $stmt->bindParam(':phone', $this->phone);
+    $stmt->bindParam(':status', $this->status);
 
     if ($stmt->execute()) {
       return true;

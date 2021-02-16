@@ -84,15 +84,18 @@ class UserDevice
       ' SET branchId = :branchId, 
             deviceId = :deviceId,
             userId = :userId,
-            description = :description';
+            description = :description
+        WHERE id = :id';
 
     $stmt = $this->conn->prepare($query);
 
+    $this->id = htmlspecialchars(strip_tags($this->id));
     $this->branchId = htmlspecialchars(strip_tags($this->branchId));
     $this->deviceId = htmlspecialchars(strip_tags($this->deviceId));
     $this->userId = htmlspecialchars(strip_tags($this->userId));
     $this->description = htmlspecialchars(strip_tags($this->description));
 
+    $stmt->bindParam(':id', $this->id);
     $stmt->bindParam(':branchId', $this->branchId);
     $stmt->bindParam(':deviceId', $this->deviceId);
     $stmt->bindParam(':userId', $this->userId);
