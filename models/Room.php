@@ -19,7 +19,7 @@ class Room
   {
     $query = 'SELECT 
                 * FROM ' . $this->table . ' r
-                r.createdAt DESC';
+                ORDER BY r.createdAt DESC';
 
     $stmt = $this->conn->prepare($query);
     $stmt->execute();
