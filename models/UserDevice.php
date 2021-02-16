@@ -21,7 +21,7 @@ class UserDevice
   {
     $query = 'SELECT 
                 * FROM ' . $this->table . ' u_d
-                r.createdAt DESC';
+                ORDER BY u_d.createdAt DESC';
 
     $stmt = $this->conn->prepare($query);
     $stmt->execute();
@@ -33,7 +33,7 @@ class UserDevice
     $query = 'SELECT *
                 FROM ' . $this->table . ' u_d
                 WHERE
-                p.id = ?
+                u_d.id = ?
                 LIMIT 0,1';
 
     $stmt = $this->conn->prepare($query);
@@ -47,6 +47,40 @@ class UserDevice
     $this->userId = $row['userId'];
     $this->description = $row['description'];
     $this->createdAt = $row['createdAt'];
+  }
+
+  public function getByUserId()
+  {
+    $query = 'SELECT u_d.*, r.room
+              FROM ' . $this->table . ' u_d
+              LEFT JOIN rooms r
+              ON u_d.userId = r.userId                
+              WHERE
+              u_d.userId = ?';
+
+    $stmt = $this->conn->prepare($query);
+    $stmt->bindParam(1, $this->userId);
+    $stmt->execute();
+
+    return $stmt;
+  }
+
+  public function getByDevice()
+  {
+    $query = 'SELECT u_d.*, r.room
+                FROM ' . $this->table . ' u_d
+                LEFT JOIN rooms r
+                ON u_d.userId = r.userId                
+                WHERE
+                u_d.branchId = ? AND
+                u_d.deviceId = ?';
+
+    $stmt = $this->conn->prepare($query);
+    $stmt->bindParam(1, $this->branchId);
+    $stmt->bindParam(2, $this->deviceId);
+    $stmt->execute();
+
+    return $stmt;
   }
 
   public function create()
